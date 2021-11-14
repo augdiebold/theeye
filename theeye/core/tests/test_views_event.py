@@ -1,9 +1,11 @@
-from django.test import TestCase
+from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
+from django.urls import reverse
+from django.shortcuts import resolve_url as r
+from theeye.core.views import EventViewSet
 
-from theeye.core.models import Event
 
-
-class EventModelTest(TestCase):
+class EventViewSetTest(APITestCase):
     def setUp(self):
         self.sample_list = [
             {
@@ -43,9 +45,13 @@ class EventModelTest(TestCase):
             }
         ]
 
+    def test_post(self):
+        url = r('core:event-list')
         for sample in self.sample_list:
-            Event.objects.create(**sample)
+            response = self.client.post(url, sample, format='json')
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_create(self):
-        """Three Event objects should exist"""
-        self.assertEqual(Event.objects.count(), 3)
+    def test_get(self):
+        url = r('core:event-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

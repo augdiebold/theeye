@@ -11,3 +11,14 @@ class Event(models.Model):
 
     class Meta:
         ordering = ['-timestamp']
+
+
+class ErrorLog(models.Model):
+    field = models.CharField('field', max_length=100)
+    code = models.CharField('code', max_length=100)
+    message = models.CharField('message', max_length=255)
+    input = models.TextField('input')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']

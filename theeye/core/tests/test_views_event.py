@@ -1,8 +1,8 @@
-from rest_framework import status
-from rest_framework.test import APIClient, APITestCase
-from django.urls import reverse
 from django.shortcuts import resolve_url as r
-from theeye.core.views import EventViewSet
+from rest_framework import status
+from rest_framework.test import APITestCase
+
+from theeye.core.models import ErrorLog
 
 
 class EventViewSetTest(APITestCase):
@@ -45,6 +45,8 @@ class EventViewSetTest(APITestCase):
             }
         ]
 
+        self.invalid_sample = {}
+
     def test_post(self):
         url = r('core:event-list')
         for sample in self.sample_list:
@@ -55,3 +57,8 @@ class EventViewSetTest(APITestCase):
         url = r('core:event-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_invalid_post(self):
+        url = r('core:event-list')
+        self.client.post(url, self.invalid_sample, format='json')
+        self.assertTrue(ErrorLog.objects.exists())

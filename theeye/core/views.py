@@ -1,4 +1,6 @@
+from rest_framework import status
 from rest_framework.mixins import ListModelMixin
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from theeye.core.models import Event, ErrorLog
@@ -11,7 +13,9 @@ class EventViewSet(ModelViewSet):
     serializer_class = EventSerializer
 
     def create(self, request, *args, **kwargs):
-        return event_handler.delay(request.data)
+        event_handler.delay(request.data)
+
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class ErrorLogViewSet(ListModelMixin, GenericViewSet):

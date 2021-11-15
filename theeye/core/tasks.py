@@ -1,8 +1,6 @@
 import json
 
 from celery import shared_task
-from rest_framework import status
-from rest_framework.response import Response
 
 from theeye.core.models import ErrorLog
 from theeye.core.serializers import EventSerializer
@@ -24,9 +22,5 @@ def event_handler(data):
                                         message=error_detail.title(),
                                         input=json.dumps(serializer.data))
 
-        return Response(serializer.errors, status=status.HTTP_202_ACCEPTED)
-
     else:
         serializer.save()
-
-    return Response(serializer.data, status=status.HTTP_201_CREATED)

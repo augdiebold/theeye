@@ -48,17 +48,20 @@ class EventViewSetTest(APITestCase):
         self.invalid_sample = {}
 
     def test_post(self):
+        """POST method to api/events should return a HTTP 201 status code"""
         url = r('core:event-list')
         for sample in self.sample_list:
             response = self.client.post(url, sample, format='json')
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_get(self):
+        """GET method to api/events should return a HTTP 200 status code"""
         url = r('core:event-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_invalid_post(self):
+        """INVALID POST method to api/events should create an ErrorLog object"""
         url = r('core:event-list')
         self.client.post(url, self.invalid_sample, format='json')
         self.assertTrue(ErrorLog.objects.exists())

@@ -1,10 +1,13 @@
 from django.shortcuts import resolve_url as r
 from rest_framework import status
-from rest_framework.test import APITestCase
+
+from theeye.core.tests.helpers.helpers import TokenAuthAPITestCase
 
 
-class EventViewSetTest(APITestCase):
+class EventViewSetTest(TokenAuthAPITestCase):
     def setUp(self):
+        self.token_auth()
+
         self.sample_list = [
             {
                 "session_id": "e2085be5-9137-4e4e-80b5-f1ffddc25423",
@@ -44,6 +47,7 @@ class EventViewSetTest(APITestCase):
         ]
 
         self.invalid_sample = {}
+
 
     def test_post(self):
         """Valid data POST method to api/events should create Event objects """

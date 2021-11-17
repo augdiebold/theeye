@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:14.0-alpine
+    env_file:
+      - .env-docker
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data/
+    networks:
+      - theeye
+
+  web:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env-docker
+    depends_on:
+      - db
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    networks:
+      - theeye
+
+  rabbitmq:
+    image: rabbitmq:alpine
+    restart: always
+    ports:
+      - "5672:5672"
+    networks:
+      - theeye
+
+  celery:
+    build:
+      context: .
+    command: celery -A theeye worker -l info
+    volumes:
+      - .:/app
+    env_file:
+      - .env-docker
+    depends_on:
+      - db
+      - rabbitmq
+      - web
+    networks:
+      - theeye
+
+
+networks:
+  theeye:
+    driver: bridge
+
+volumes:
+  db:

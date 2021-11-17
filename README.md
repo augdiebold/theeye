@@ -4,7 +4,7 @@ This application is writen in python, using Django, Django Rest Framework, Postg
 
 Two endpoints are provided, one for receiving and list events sent to The Eye and another one to list errors from invalid requests.
 
-The original briefing is available in the end of this document.
+The original briefing is available at the end of this document.
 
 ## Installation
 ```
